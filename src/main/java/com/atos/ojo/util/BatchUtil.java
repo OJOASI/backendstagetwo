@@ -23,6 +23,12 @@ public class BatchUtil {
 	@Value("${stagetwo.batchitem.status.failed:Failed}")
 	private String failedStatus;
 
+	@Value("${stagetwo.batchitem.retry.limit:5}")
+	private Integer retryLimit;
+
+	@Value("${stagetwo.batchitem.status.error:Failed}")
+	private String errorStatus;
+
 	public String clobToString(Clob clob) throws SQLException, IOException {
 
 		if (clob == null) {
@@ -43,7 +49,9 @@ public class BatchUtil {
 		String truncatedErrorMessage = errorMessage.length() > errorMessageLength
 				? errorMessage.substring(0, errorMessageLength)
 				: errorMessage;
-		item.setStatus(failedStatus);
+		Integer retryCount = item.getRetry();
+		item.setRetry(retryCount + 1);
+		item.setStatus(retryCount > retryLimit ? failedStatus : errorStatus);
 		item.setErrorMsg(truncatedErrorMessage);
 	}
 

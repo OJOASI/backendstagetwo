@@ -16,6 +16,7 @@ public class BatchItem {
 	Integer itemId;
 	Integer batchId;
 	Integer crmId;
+	Integer retry;
 	String msisdn;
 	String coCode;
 	Date entryDate;

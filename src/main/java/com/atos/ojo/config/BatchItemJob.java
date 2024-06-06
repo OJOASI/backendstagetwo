@@ -80,7 +80,13 @@ public class BatchItemJob {
 	BatchUtil batchUtil;
 
 	@Value("${stagetwo.batchitem.status.inital:VALID}")
-	private String status;
+	private String validStatus;
+
+	@Value("${stagetwo.batchitem.status.error:ERROR}")
+	private String errorStatus;
+
+	@Value("${stagetwo.batchitem.retry.limit:5}")
+	private Integer retryLimit;
 
 	@Value("${stagetwo.batch.chunksize:100}")
 	private Integer chunkSize;
@@ -138,7 +144,9 @@ public class BatchItemJob {
 		reader.setQueryProvider(createQueryProvider());
 		reader.setRowMapper(new BeanPropertyRowMapper<>(BatchItem.class));
 		Map<String, Object> parameterValues = new HashMap<>();
-		parameterValues.put("status", String.join(",", status.split("\\s+")));
+		parameterValues.put("validStatus", validStatus);
+		parameterValues.put("errorStatus", errorStatus);
+		parameterValues.put("retryLimit", retryLimit);
 		reader.setParameterValues(parameterValues);
 		reader.afterPropertiesSet();
 		return reader;
@@ -150,7 +158,7 @@ public class BatchItemJob {
 		queryProvider.setDataSource(batchDataSource);
 		queryProvider.setSelectClause("*");
 		queryProvider.setFromClause("BATCH_ITEM");
-		queryProvider.setWhereClause("WHERE status in (:status)");
+		queryProvider.setWhereClause("WHERE status=:validStatus or (status =:errorStatus and retry < :retryLimit)");
 		queryProvider.setSortKeys(sortKeys());
 
 		return queryProvider.getObject();
