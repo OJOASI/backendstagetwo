@@ -50,7 +50,10 @@ public class BatchUtil {
 				? errorMessage.substring(0, errorMessageLength)
 				: errorMessage;
 		Integer retryCount = item.getRetry();
-		item.setRetry(retryCount + 1);
+		if(retryCount != null)
+			item.setRetry(retryCount + 1);
+		else
+			item.setRetry(1);
 		item.setStatus(retryCount > retryLimit ? failedStatus : errorStatus);
 		item.setErrorMsg(truncatedErrorMessage);
 	}
