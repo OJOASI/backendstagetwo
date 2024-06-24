@@ -7,14 +7,14 @@ import java.sql.Clob;
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import com.atos.ojo.model.batch.BatchItem;
-import com.atos.ojo.model.lizard.Error;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Component
+@Slf4j
 public class BatchUtil {
 
 	@Value("${stagetwo.batchitem.error.length:1000}")
@@ -49,12 +49,13 @@ public class BatchUtil {
 		String truncatedErrorMessage = errorMessage.length() > errorMessageLength
 				? errorMessage.substring(0, errorMessageLength)
 				: errorMessage;
-		Integer retryCount = item.getRetry();
-		if(retryCount != null)
-			item.setRetry(retryCount + 1);
-		else
-			item.setRetry(1);
-		item.setStatus(retryCount > retryLimit ? failedStatus : errorStatus);
+		Integer currentRetryCount = item.getRetry();
+		Integer newRetryCount = 1;
+		if (currentRetryCount != null) {
+			newRetryCount = currentRetryCount + 1;
+		}
+		item.setRetry(newRetryCount);
+		item.setStatus(newRetryCount >= retryLimit ? failedStatus : errorStatus);
 		item.setErrorMsg(truncatedErrorMessage);
 	}
 

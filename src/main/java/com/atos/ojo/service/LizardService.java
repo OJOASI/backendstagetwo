@@ -1,6 +1,9 @@
 package com.atos.ojo.service;
 
+import java.sql.Clob;
 import java.util.Map;
+
+import javax.sql.rowset.serial.SerialClob;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

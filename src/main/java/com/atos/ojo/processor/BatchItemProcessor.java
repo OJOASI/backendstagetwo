@@ -131,11 +131,16 @@ public class BatchItemProcessor implements ItemProcessor<BatchItem, BatchItem> {
 		billingAccountRef.setId(enrichMap.get("billingAccountId"));
 		productOrderCreate.setBillingAccount(billingAccountRef);
 
-		// set related Party
-		RelatedParty relatedParty = new RelatedParty();
-		relatedParty.setId(enrichMap.get("TcrmId"));
-		relatedParty.setName("customer");
-		productOrderCreate.getRelatedParty().add(relatedParty);
+		// Set related Party
+		boolean customerExists = productOrderCreate.getRelatedParty().stream()
+				.anyMatch(rp -> "customer".equals(rp.getName()));
+
+		if (!customerExists) {
+			RelatedParty relatedParty = new RelatedParty();
+			relatedParty.setId(enrichMap.get("TcrmId"));
+			relatedParty.setName("customer");
+			productOrderCreate.getRelatedParty().add(relatedParty);
+		}
 
 		List<ProductOrderItem> productOrderItems = productOrderCreate.getProductOrderItem();
 		Optional<ProductOrderItem> mainProductOrderItemOpt = productOrderItems.stream()
