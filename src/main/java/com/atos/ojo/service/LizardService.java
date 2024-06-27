@@ -1,6 +1,7 @@
 package com.atos.ojo.service;
 
 import java.sql.Clob;
+import java.util.Date;
 import java.util.Map;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -92,6 +93,7 @@ public class LizardService {
 			// Handle successful response
 			ProductOrder productOrder = response.getBody();
 			item.setStatus(successStatus);
+			item.setUpdateDate(new Date());
 			item.setErrorMsg(productOrder.getId());
 		} catch (HttpClientErrorException | HttpServerErrorException ex) {
 			// extract error

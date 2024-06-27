@@ -2,6 +2,7 @@ package com.atos.ojo.service;
 
 import java.sql.Clob;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -243,6 +244,7 @@ public class BscsService {
 			Clob enrichDataClob = new SerialClob(objectMapper.writeValueAsString(enrichMap).toString().toCharArray());
 			item.setEnrichData(enrichDataClob);
 			item.setStatus(inProgress);
+			item.setUpdateDate(new Date());
 			item.setErrorMsg("BSCS Party Successfully Created");
 		} catch (HttpClientErrorException |
 

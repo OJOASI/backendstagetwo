@@ -1,6 +1,7 @@
 package com.atos.ojo.config;
 
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -195,13 +196,15 @@ public class BatchItemJob {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			ps.setString(3, item.getStatus()); // AssuminggetStatus() returns status as String
-			ps.setString(4, item.getErrorMsg()); // Assuming getErrorMsg() returns error message as String
-			ps.setInt(5, item.getRetry());
-			ps.setInt(6, item.getBatchId());
-			ps.setInt(7, item.getItemId());
-			
+
+			Timestamp updateTimestamp = new Timestamp(item.getUpdateDate().getTime());
+			ps.setTimestamp(3, updateTimestamp);
+			ps.setString(4, item.getStatus()); //
+			ps.setString(5, item.getErrorMsg()); //
+			ps.setInt(6, item.getRetry());
+			ps.setInt(7, item.getBatchId());
+			ps.setInt(8, item.getItemId());
+
 		});
 
 		writer.afterPropertiesSet();

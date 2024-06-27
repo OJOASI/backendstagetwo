@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.sql.Clob;
 import java.sql.SQLException;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -56,6 +57,7 @@ public class BatchUtil {
 		}
 		item.setRetry(newRetryCount);
 		item.setStatus(newRetryCount >= retryLimit ? failedStatus : errorStatus);
+		item.setUpdateDate(new Date());
 		item.setErrorMsg(truncatedErrorMessage);
 	}
 

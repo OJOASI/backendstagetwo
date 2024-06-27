@@ -1,6 +1,7 @@
 package com.atos.ojo.service;
 
 import java.sql.Clob;
+import java.util.Date;
 import java.util.Map;
 
 import javax.sql.rowset.serial.SerialClob;
@@ -90,6 +91,7 @@ public class TcrmService {
 								objectMapper.writeValueAsString(enrichMap).toString().toCharArray());
 						item.setEnrichData(enrichDataClob);
 						item.setStatus(inProgress);
+						item.setUpdateDate(new Date());
 						item.setErrorMsg("TCRM Party Successfully Created");
 					} else {
 						String errorMessage = "The TcrmOrganizationParty response indicates Success but no TCRM ID generated -"
