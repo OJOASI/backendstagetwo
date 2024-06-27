@@ -180,7 +180,7 @@ public class BatchItemJob {
 		writer.setDataSource(batchDataSource);
 		writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
 		writer.setSql(
-				"UPDATE batch_item SET enrich_data = ? ,po_data = ?, update_date = SYSDATE, status = ?,error_msg = ?,retry = ? "
+				"UPDATE batch_item SET enrich_data = ? ,po_data = ?, update_date = ?, status = ?,error_msg = ?,retry = ? "
 						+ " WHERE batch_id = ?  AND item_id = ?");
 
 		// LobHandler for handling CLOB data
@@ -195,12 +195,13 @@ public class BatchItemJob {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
+			
 			ps.setString(3, item.getStatus()); // AssuminggetStatus() returns status as String
 			ps.setString(4, item.getErrorMsg()); // Assuming getErrorMsg() returns error message as String
 			ps.setInt(5, item.getRetry());
 			ps.setInt(6, item.getBatchId());
 			ps.setInt(7, item.getItemId());
+			
 		});
 
 		writer.afterPropertiesSet();

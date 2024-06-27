@@ -53,7 +53,7 @@ public class BscsService {
 	@Value("${stagetwo.batchitem.status.inprogress}")
 	private String inProgress;
 
-	public void callPartyManagement(Map<String, String> enrichMap, BatchItem item) {
+	public void callPartyManagement(Map<String, String> enrichMap, BatchItem item,int retryCount) {
 
 		// Initialize request parameters
 		String ratePlanOtherCreditAndCharge = enrichMap.get("ratePlanOtherCreditAndCharge");
@@ -252,7 +252,12 @@ public class BscsService {
 					+ (ex.getResponseBodyAsString() != null ? ex.getResponseBodyAsString().replaceAll("\\n", "")
 							: null);
 			log.error(errorMessage);
-			batchUtil.setItemErrorAttributes(item, errorMessage);
+			if(retryCount < 4) {
+				retryCount = retryCount + 1;
+				callPartyManagement(enrichMap, item,retryCount);
+			} else {
+				batchUtil.setItemErrorAttributes(item, errorMessage);
+			}
 			ex.printStackTrace();
 		} catch (Exception ex) {
 			String errorMessage = "BSS API throws an exception: "

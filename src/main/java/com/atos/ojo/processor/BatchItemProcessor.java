@@ -93,7 +93,7 @@ public class BatchItemProcessor implements ItemProcessor<BatchItem, BatchItem> {
 					}
 					// billingAccountId validation
 					if (enrichMap.containsKey("TcrmId") && !enrichMap.containsKey("billingAccountId")) {
-						bscsService.callPartyManagement(enrichMap, item);
+						bscsService.callPartyManagement(enrichMap, item,1);
 					} else {
 						log.info("BSS API call bypassed - Missing TcrmId or billingAccountId already present.");
 					}
