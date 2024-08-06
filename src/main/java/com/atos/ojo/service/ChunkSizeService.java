@@ -1,6 +1,7 @@
 package com.atos.ojo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,12 @@ public class ChunkSizeService {
 	private String batchItemsInitialRequestsCountQuery;
 
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	@Qualifier("ocmJdbcTemplate")
+	private JdbcTemplate ocmJdbcTemplate;
+
+	@Autowired
+	@Qualifier("batchJdbcTemplate")
+	private JdbcTemplate batchJdbcTemplate;
 
 	public Integer getAllowedChunkSize() {
 		Integer ocmOrdersCount = getOcmValidatedOrdersCount();
@@ -32,11 +38,11 @@ public class ChunkSizeService {
 	}
 
 	private Integer getOcmValidatedOrdersCount() {
-		return jdbcTemplate.queryForObject(ocmValidatedOrdersCountQuery, Integer.class);
+		return ocmJdbcTemplate.queryForObject(ocmValidatedOrdersCountQuery, Integer.class);
 	}
 
 	public Integer getBatchItemInitialRequestsCount() {
-		Integer intialRequestsCount = jdbcTemplate.queryForObject(batchItemsInitialRequestsCountQuery, Integer.class);
+		Integer intialRequestsCount = batchJdbcTemplate.queryForObject(batchItemsInitialRequestsCountQuery, Integer.class);
 		log.info("AMOM/ACDM: Initial requests=" + intialRequestsCount);
 		return intialRequestsCount;
 	}

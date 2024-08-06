@@ -4,11 +4,13 @@ import java.time.Duration;
 
 import javax.sql.DataSource;
 
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.web.client.RestTemplate;
@@ -38,11 +40,20 @@ public class BatchAppConfig {
 		return objectMapper;
 	}
 
+   // Jdbc Templates 	
+
 	@Bean
-	public JdbcTemplate jdbcTemplate(DataSource dataSource) {
-		return new JdbcTemplate(dataSource);
+	public JdbcTemplate ocmJdbcTemplate(@Qualifier("ocmDataSource") DataSource ocmDataSource) {
+		return new JdbcTemplate(ocmDataSource);
 	}
 
+	@Bean
+	public JdbcTemplate batchJdbcTemplate(@Qualifier("batchDataSource") DataSource batchDataSource) {
+		return new JdbcTemplate(batchDataSource);
+	}
+
+	
+	// Rest Template
 	@Bean
 	public RestTemplate restTemplate() {
 		RestTemplate restTemplate = new RestTemplate(httpComponentsClientHttpRequestFactory());
